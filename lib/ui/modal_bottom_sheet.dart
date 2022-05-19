@@ -256,20 +256,29 @@ class MyBottomSheet2 extends HookConsumerWidget {
     return GestureDetector(
       child: AnimatedContainer(
         height: height,
-        duration: Duration(milliseconds: _isMovingByTouch.value ? 0 : 300),
+        duration: Duration(milliseconds: _isMovingByTouch.value ? 0 : 150),
         child: GestureDetector(
           behavior: HitTestBehavior.opaque,
           onVerticalDragUpdate: (details) {
             _isMovingByTouch.value = true;
             final currentHeight = ref.watch(heightProvider);
             final newHeight = currentHeight - details.delta.dy;
-            ref.read(heightProvider.notifier).state = newHeight;
+            if (newHeight > 750) {
+              ref.read(heightProvider.notifier).state = 750;
+            } else {
+              ref.read(heightProvider.notifier).state = newHeight;
+            }
           },
           onVerticalDragEnd: (details) {
             _isMovingByTouch.value = false;
             final currentHeight = ref.watch(heightProvider);
-            if (currentHeight < 400) {
+            if (currentHeight < 450) {
               Navigator.of(context).pop();
+            }
+            if (currentHeight > 450 + (750 - 400) / 2) {
+              ref.read(heightProvider.notifier).state = 750;
+            } else {
+              ref.read(heightProvider.notifier).state = 450;
             }
           },
           child: Container(
